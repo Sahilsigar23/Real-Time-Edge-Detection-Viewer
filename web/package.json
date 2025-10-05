@@ -1,0 +1,27 @@
+{
+  "name": "edge-detector-web-viewer",
+  "version": "1.0.0",
+  "description": "TypeScript web viewer for displaying processed frames from Edge Detector Android app",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "tsc && node server.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "typescript",
+    "opencv",
+    "edge-detection",
+    "web-viewer"
+  ],
+  "author": "Flam RnD Intern",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

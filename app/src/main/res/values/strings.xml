@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Edge Detector</string>
+    <string name="toggle_processing">Toggle Processing</string>
+    <string name="camera_permission_required">Camera permission is required</string>
+    <string name="fps_label">FPS: %1$.1f</string>
+    <string name="processing_enabled">Edge Detection: ON</string>
+    <string name="processing_disabled">Edge Detection: OFF</string>
+</resources>
