@@ -229,18 +229,3 @@ http://localhost:8080
 3. **OpenGL Texture Updates**: Synchronized texture binding with frame processing
 4. **Camera2 API Integration**: Handling various YUV formats and conversions
 
-### Future Improvements
-- Add more OpenCV filters (blur, threshold, morphology)
-- Implement real-time WebSocket streaming to web viewer
-- Add recording functionality
-- Support multiple camera sensors
-- Add UI controls for filter parameters
-
-## 📄 License
-This project is created for assessment purposes.
-
-## 👤 Author
-Flam RnD Intern Assessment - 2025
-
-## 📞 Contact
-For questions or clarifications, please reach out through the assessment portal.
