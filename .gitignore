@@ -35,6 +35,8 @@ captures/
 # NDK
 obj/
 .externalNativeBuild/
+# Note: jniLibs with OpenCV .so files should be tracked
+# !app/src/main/jniLibs/
 
 # IntelliJ
 *.iml
