@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge Detector Web Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .viewer-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        #viewer-container {
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        #refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        #refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #555;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .viewer-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Edge Detector Web Viewer</h1>
+            <p class="subtitle">Real-Time Computer Vision Demonstration</p>
+        </header>
+
+        <div class="viewer-card">
+            <div id="viewer-container"></div>
+            
+            <div class="controls">
+                <button id="refresh-btn">🔄 Refresh Frame</button>
+            </div>
+
+            <div class="info-section">
+                <h2>About This Viewer</h2>
+                <p>
+                    This TypeScript-based web viewer demonstrates the integration between 
+                    the Android Edge Detector app and web technologies. It displays processed 
+                    frames with real-time statistics.
+                </p>
+                
+                <h3 style="margin-top: 20px; color: #333;">Features</h3>
+                <ul class="feature-list">
+                    <li>Real-time frame statistics display (FPS, resolution, processing time)</li>
+                    <li>Base64 image rendering support</li>
+                    <li>Modular TypeScript architecture with type safety</li>
+                    <li>Clean DOM manipulation</li>
+                    <li>Responsive design</li>
+                </ul>
+
+                <h3 style="margin-top: 20px; color: #333;">Technology Stack</h3>
+                <ul class="feature-list">
+                    <li>TypeScript for type-safe development</li>
+                    <li>Modern ES6+ JavaScript features</li>
+                    <li>HTML5 Canvas (via img element)</li>
+                    <li>CSS3 for styling</li>
+                </ul>
+
+                <p style="margin-top: 20px; font-style: italic; color: #888;">
+                    Note: In production, frames would be streamed from the Android app via WebSocket 
+                    or HTTP endpoint. This demo uses a static sample frame.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>Flam RnD Intern Assessment - 2025</p>
+            <p>Android + OpenCV-C++ + OpenGL + Web Integration</p>
+        </footer>
+    </div>
+
+    <!-- Load the compiled TypeScript bundle -->
+    <script src="../dist/index.js"></script>
+</body>
+</html>
