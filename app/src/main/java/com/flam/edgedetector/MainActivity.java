@@ -143,26 +143,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleProcessing() {
-        try {
-            // Test if native library is working before enabling
-            if (!isProcessingEnabled) {
-                String version = NativeProcessor.getOpenCVVersion();
-                Log.d(TAG, "OpenCV version: " + version);
-                if (version == null || version.contains("Not Configured")) {
-                    Toast.makeText(this, "OpenCV not available. Showing raw feed only.", 
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-            
-            isProcessingEnabled = !isProcessingEnabled;
-            updateStatusText();
-            Log.d(TAG, "Processing toggled: " + (isProcessingEnabled ? "ON" : "OFF"));
-        } catch (Exception e) {
-            Log.e(TAG, "Error toggling processing", e);
-            Toast.makeText(this, "Processing unavailable", Toast.LENGTH_SHORT).show();
-            isProcessingEnabled = false;
-            updateStatusText();
+        isProcessingEnabled = !isProcessingEnabled;
+        updateStatusText();
+        Log.d(TAG, "Processing toggled: " + (isProcessingEnabled ? "ON" : "OFF"));
+        
+        if (isProcessingEnabled) {
+            Toast.makeText(this, "Edge Detection Enabled", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Showing Raw Camera Feed", Toast.LENGTH_SHORT).show();
         }
     }
 
