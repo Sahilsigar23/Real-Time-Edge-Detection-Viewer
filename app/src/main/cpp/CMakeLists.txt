@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # OpenCV configuration
 # NOTE: Update this path to your OpenCV Android SDK location
 # Download from: https://opencv.org/releases/
-set(OpenCV_DIR "C:/opencv-android-sdk/sdk/native/jni")
+set(OpenCV_DIR "C:\Users\sahil\Downloads\opencv-4.12.0-android-sdk")
 
 # Try to find OpenCV
 find_package(OpenCV REQUIRED)
