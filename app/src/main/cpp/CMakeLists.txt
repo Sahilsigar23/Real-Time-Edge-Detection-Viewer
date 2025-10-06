@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Example paths:
 #   Windows: C:/opencv-android-sdk/sdk/native/jni
 #   Linux/Mac: /path/to/opencv-android-sdk/sdk/native/jni
-set(OpenCV_DIR "OPENCV_SDK_PATH_HERE" CACHE PATH "Path to OpenCV Android SDK")
+set(OpenCV_DIR "C:/Users/sahil/Downloads/opencv-4.12.0-android-sdk/OpenCV-android-sdk/sdk/native/jni" CACHE PATH "Path to OpenCV Android SDK")
 
 # Try to find OpenCV - make it optional for initial setup
 if(EXISTS "${OpenCV_DIR}")
