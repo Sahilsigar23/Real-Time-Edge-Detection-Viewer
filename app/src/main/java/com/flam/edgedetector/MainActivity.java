@@ -115,17 +115,30 @@ public class MainActivity extends AppCompatActivity {
 
             byte[] processedData;
             if (isProcessingEnabled) {
-                // Process frame through JNI
-                long startTime = System.nanoTime();
-                processedData = NativeProcessor.processFrame(frameData, width, height);
-                long endTime = System.nanoTime();
-                
-                if (processedData == null) {
-                    Log.w(TAG, "Frame processing returned null, using original");
+                // Try to process frame through JNI
+                try {
+                    long startTime = System.nanoTime();
+                    processedData = NativeProcessor.processFrame(frameData, width, height);
+                    long endTime = System.nanoTime();
+                    
+                    if (processedData == null) {
+                        Log.w(TAG, "Frame processing returned null, using original");
+                        processedData = frameData;
+                    } else {
+                        float processingTime = (endTime - startTime) / 1_000_000.0f;
+                        Log.d(TAG, "Frame processing time: " + processingTime + " ms");
+                    }
+                } catch (UnsatisfiedLinkError e) {
+                    Log.e(TAG, "Native library not available: " + e.getMessage());
                     processedData = frameData;
-                } else {
-                    float processingTime = (endTime - startTime) / 1_000_000.0f;
-                    Log.d(TAG, "Frame processing time: " + processingTime + " ms");
+                    // Disable processing since native lib isn't working
+                    isProcessingEnabled = false;
+                    runOnUiThread(() -> {
+                        updateStatusText();
+                        Toast.makeText(MainActivity.this, 
+                                "Native library not loaded. Rebuild the app.", 
+                                Toast.LENGTH_LONG).show();
+                    });
                 }
             } else {
                 // Use raw frame
