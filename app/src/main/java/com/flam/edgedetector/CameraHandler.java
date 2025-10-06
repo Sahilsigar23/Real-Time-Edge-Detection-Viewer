@@ -84,6 +84,11 @@ public class CameraHandler {
 
     private void openCamera() {
         CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+        if (manager == null) {
+            Log.e(TAG, "Camera manager is null");
+            return;
+        }
+        
         try {
             String cameraId = getCameraId(manager);
             if (cameraId == null) {
@@ -95,13 +100,21 @@ public class CameraHandler {
             imageReader = ImageReader.newInstance(IMAGE_WIDTH, IMAGE_HEIGHT, 
                     ImageFormat.YUV_420_888, 2);
             imageReader.setOnImageAvailableListener(reader -> {
-                Image image = reader.acquireLatestImage();
-                if (image != null) {
-                    byte[] rgbaData = convertYUVtoRGBA(image);
-                    if (frameCallback != null && rgbaData != null) {
-                        frameCallback.onFrameAvailable(rgbaData, image.getWidth(), image.getHeight());
+                Image image = null;
+                try {
+                    image = reader.acquireLatestImage();
+                    if (image != null) {
+                        byte[] rgbaData = convertYUVtoRGBA(image);
+                        if (frameCallback != null && rgbaData != null) {
+                            frameCallback.onFrameAvailable(rgbaData, image.getWidth(), image.getHeight());
+                        }
                     }
-                    image.close();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing image", e);
+                } finally {
+                    if (image != null) {
+                        image.close();
+                    }
                 }
             }, backgroundHandler);
 

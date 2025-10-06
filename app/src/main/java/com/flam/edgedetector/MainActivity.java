@@ -97,36 +97,73 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processFrame(byte[] frameData, int width, int height) {
-        long currentTime = System.currentTimeMillis();
-        if (lastFrameTime > 0) {
-            float deltaTime = (currentTime - lastFrameTime) / 1000.0f;
-            currentFps = 1.0f / deltaTime;
-            runOnUiThread(() -> updateFpsDisplay());
-        }
-        lastFrameTime = currentTime;
+        try {
+            if (frameData == null || width <= 0 || height <= 0) {
+                Log.w(TAG, "Invalid frame data received");
+                return;
+            }
 
-        byte[] processedData;
-        if (isProcessingEnabled) {
-            // Process frame through JNI
-            long startTime = System.nanoTime();
-            processedData = NativeProcessor.processFrame(frameData, width, height);
-            long endTime = System.nanoTime();
-            float processingTime = (endTime - startTime) / 1_000_000.0f; // Convert to ms
-            Log.d(TAG, "Frame processing time: " + processingTime + " ms");
-        } else {
-            // Use raw frame
-            processedData = frameData;
-        }
+            long currentTime = System.currentTimeMillis();
+            if (lastFrameTime > 0) {
+                float deltaTime = (currentTime - lastFrameTime) / 1000.0f;
+                if (deltaTime > 0) {
+                    currentFps = 1.0f / deltaTime;
+                    runOnUiThread(() -> updateFpsDisplay());
+                }
+            }
+            lastFrameTime = currentTime;
 
-        // Update OpenGL texture
-        glRenderer.updateTexture(processedData, width, height);
-        glSurfaceView.requestRender();
+            byte[] processedData;
+            if (isProcessingEnabled) {
+                // Process frame through JNI
+                long startTime = System.nanoTime();
+                processedData = NativeProcessor.processFrame(frameData, width, height);
+                long endTime = System.nanoTime();
+                
+                if (processedData == null) {
+                    Log.w(TAG, "Frame processing returned null, using original");
+                    processedData = frameData;
+                } else {
+                    float processingTime = (endTime - startTime) / 1_000_000.0f;
+                    Log.d(TAG, "Frame processing time: " + processingTime + " ms");
+                }
+            } else {
+                // Use raw frame
+                processedData = frameData;
+            }
+
+            // Update OpenGL texture
+            if (glRenderer != null && processedData != null) {
+                glRenderer.updateTexture(processedData, width, height);
+                glSurfaceView.requestRender();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error processing frame", e);
+        }
     }
 
     private void toggleProcessing() {
-        isProcessingEnabled = !isProcessingEnabled;
-        updateStatusText();
-        Log.d(TAG, "Processing toggled: " + (isProcessingEnabled ? "ON" : "OFF"));
+        try {
+            // Test if native library is working before enabling
+            if (!isProcessingEnabled) {
+                String version = NativeProcessor.getOpenCVVersion();
+                Log.d(TAG, "OpenCV version: " + version);
+                if (version == null || version.contains("Not Configured")) {
+                    Toast.makeText(this, "OpenCV not available. Showing raw feed only.", 
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            
+            isProcessingEnabled = !isProcessingEnabled;
+            updateStatusText();
+            Log.d(TAG, "Processing toggled: " + (isProcessingEnabled ? "ON" : "OFF"));
+        } catch (Exception e) {
+            Log.e(TAG, "Error toggling processing", e);
+            Toast.makeText(this, "Processing unavailable", Toast.LENGTH_SHORT).show();
+            isProcessingEnabled = false;
+            updateStatusText();
+        }
     }
 
     private void updateStatusText() {
