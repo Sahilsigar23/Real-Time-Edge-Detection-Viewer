@@ -1,7 +1,10 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
+
+#ifdef OPENCV_ENABLED
 #include <opencv2/opencv.hpp>
+#endif
 
 #define LOG_TAG "NativeProcessor"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
@@ -25,6 +28,7 @@ Java_com_flam_edgedetector_NativeProcessor_processFrame(
         return nullptr;
     }
 
+#ifdef OPENCV_ENABLED
     try {
         // Get frame data from Java
         jbyte *frameBytes = env->GetByteArrayElements(frameData, nullptr);
@@ -81,6 +85,20 @@ Java_com_flam_edgedetector_NativeProcessor_processFrame(
         LOGE("Unknown exception during frame processing");
         return nullptr;
     }
+#else
+    LOGE("OpenCV not configured - returning original frame");
+    // Return the original frame unchanged
+    jsize dataLength = env->GetArrayLength(frameData);
+    jbyteArray outputArray = env->NewByteArray(dataLength);
+    if (outputArray != nullptr) {
+        jbyte *frameBytes = env->GetByteArrayElements(frameData, nullptr);
+        if (frameBytes != nullptr) {
+            env->SetByteArrayRegion(outputArray, 0, dataLength, frameBytes);
+            env->ReleaseByteArrayElements(frameData, frameBytes, JNI_ABORT);
+        }
+    }
+    return outputArray;
+#endif
 }
 
 /**
@@ -99,6 +117,7 @@ Java_com_flam_edgedetector_NativeProcessor_toGrayscale(
         return nullptr;
     }
 
+#ifdef OPENCV_ENABLED
     try {
         // Get frame data from Java
         jbyte *frameBytes = env->GetByteArrayElements(frameData, nullptr);
@@ -143,6 +162,19 @@ Java_com_flam_edgedetector_NativeProcessor_toGrayscale(
         LOGE("Unknown exception during grayscale conversion");
         return nullptr;
     }
+#else
+    LOGE("OpenCV not configured - returning original frame");
+    jsize dataLength = env->GetArrayLength(frameData);
+    jbyteArray outputArray = env->NewByteArray(dataLength);
+    if (outputArray != nullptr) {
+        jbyte *frameBytes = env->GetByteArrayElements(frameData, nullptr);
+        if (frameBytes != nullptr) {
+            env->SetByteArrayRegion(outputArray, 0, dataLength, frameBytes);
+            env->ReleaseByteArrayElements(frameData, frameBytes, JNI_ABORT);
+        }
+    }
+    return outputArray;
+#endif
 }
 
 /**
@@ -153,9 +185,14 @@ Java_com_flam_edgedetector_NativeProcessor_getOpenCVVersion(
         JNIEnv *env,
         jclass clazz) {
     
+#ifdef OPENCV_ENABLED
     std::string version = cv::getVersionString();
     LOGD("OpenCV Version: %s", version.c_str());
     return env->NewStringUTF(version.c_str());
+#else
+    LOGD("OpenCV not configured");
+    return env->NewStringUTF("OpenCV Not Configured - Please download and configure OpenCV Android SDK");
+#endif
 }
 
 } // extern "C"

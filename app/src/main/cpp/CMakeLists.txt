@@ -9,29 +9,52 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # OpenCV configuration
 # NOTE: Update this path to your OpenCV Android SDK location
 # Download from: https://opencv.org/releases/
-set(OpenCV_DIR "C:\Users\sahil\Downloads\opencv-4.12.0-android-sdk")
+# Example paths:
+#   Windows: C:/opencv-android-sdk/sdk/native/jni
+#   Linux/Mac: /path/to/opencv-android-sdk/sdk/native/jni
+set(OpenCV_DIR "OPENCV_SDK_PATH_HERE" CACHE PATH "Path to OpenCV Android SDK")
 
-# Try to find OpenCV
-find_package(OpenCV REQUIRED)
-
-if(OpenCV_FOUND)
-    message(STATUS "OpenCV found: ${OpenCV_VERSION}")
-    message(STATUS "OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
-    message(STATUS "OpenCV libs: ${OpenCV_LIBS}")
+# Try to find OpenCV - make it optional for initial setup
+if(EXISTS "${OpenCV_DIR}")
+    find_package(OpenCV)
+    if(OpenCV_FOUND)
+        message(STATUS "✓ OpenCV found: ${OpenCV_VERSION}")
+        message(STATUS "✓ OpenCV include: ${OpenCV_INCLUDE_DIRS}")
+        message(STATUS "✓ OpenCV libs: ${OpenCV_LIBS}")
+        set(OPENCV_ENABLED ON)
+    else()
+        message(WARNING "OpenCV directory exists but package not found")
+        set(OPENCV_ENABLED OFF)
+    endif()
 else()
-    message(FATAL_ERROR "OpenCV not found. Please set OpenCV_DIR correctly.")
+    message(WARNING "========================================")
+    message(WARNING "OpenCV Android SDK not found!")
+    message(WARNING "Please:")
+    message(WARNING "1. Download from: https://opencv.org/releases/")
+    message(WARNING "2. Extract the SDK")
+    message(WARNING "3. Update OpenCV_DIR in CMakeLists.txt")
+    message(WARNING "4. Re-sync Gradle")
+    message(WARNING "========================================")
+    set(OPENCV_ENABLED OFF)
 endif()
 
-# Include directories
-include_directories(${OpenCV_INCLUDE_DIRS})
-
 # Add native library
-add_library(native-lib SHARED
-        native-lib.cpp)
+add_library(native-lib SHARED native-lib.cpp)
 
 # Link libraries
-target_link_libraries(native-lib
-        ${OpenCV_LIBS}
-        android
-        log
-        jnigraphics)
+if(OPENCV_ENABLED)
+    target_include_directories(native-lib PRIVATE ${OpenCV_INCLUDE_DIRS})
+    target_link_libraries(native-lib
+            ${OpenCV_LIBS}
+            android
+            log
+            jnigraphics)
+    target_compile_definitions(native-lib PRIVATE OPENCV_ENABLED)
+    message(STATUS "✓ Building with OpenCV support")
+else()
+    target_link_libraries(native-lib
+            android
+            log
+            jnigraphics)
+    message(STATUS "⚠ Building WITHOUT OpenCV (stub mode)")
+endif()
