@@ -46,6 +46,7 @@ if(OPENCV_ENABLED)
     target_include_directories(native-lib PRIVATE ${OpenCV_INCLUDE_DIRS})
     target_link_libraries(native-lib
             ${OpenCV_LIBS}
+            c++_shared
             android
             log
             jnigraphics)
@@ -53,6 +54,7 @@ if(OPENCV_ENABLED)
     message(STATUS "✓ Building with OpenCV support")
 else()
     target_link_libraries(native-lib
+            c++_shared
             android
             log
             jnigraphics)
