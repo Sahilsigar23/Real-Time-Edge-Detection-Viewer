@@ -12,7 +12,7 @@ extern "C" {
 /**
  * Process frame using OpenCV Canny edge detection
  */
-JNIEXPORT jbyteArray JNICALL
+extern "C" JNIEXPORT jbyteArray JNICALL
 Java_com_flam_edgedetector_NativeProcessor_processFrame(
         JNIEnv *env,
         jclass clazz,
@@ -86,7 +86,7 @@ Java_com_flam_edgedetector_NativeProcessor_processFrame(
 /**
  * Convert frame to grayscale
  */
-JNIEXPORT jbyteArray JNICALL
+extern "C" JNIEXPORT jbyteArray JNICALL
 Java_com_flam_edgedetector_NativeProcessor_toGrayscale(
         JNIEnv *env,
         jclass clazz,
@@ -148,7 +148,7 @@ Java_com_flam_edgedetector_NativeProcessor_toGrayscale(
 /**
  * Get OpenCV version
  */
-JNIEXPORT jstring JNICALL
+extern "C" JNIEXPORT jstring JNICALL
 Java_com_flam_edgedetector_NativeProcessor_getOpenCVVersion(
         JNIEnv *env,
         jclass clazz) {
