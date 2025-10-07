@@ -20,12 +20,22 @@ A real-time edge detection application that demonstrates proficiency in:
 
 ### 📸 App Screenshots
 
-| Raw Camera Feed (OFF) | Edge Detection (ON) |
-|:---------------------:|:--------------------:|
-| FPS: 31.2 - Normal camera view | FPS: 14.1 - Black bg, white edges |
-| ![Screenshot OFF](https://i.imgur.com/placeholder1.png) | ![Screenshot ON](https://i.imgur.com/placeholder2.png) |
+<table>
+<tr>
+<td align="center">
+<img src="docs/Screenshot 2025-10-07 191640.png" width="300"/><br/>
+<b>Edge Detection: OFF</b><br/>
+FPS: 31.2 | Raw camera feed
+</td>
+<td align="center">
+<img src="docs/Screenshot 2025-10-07 191654.png" width="300"/><br/>
+<b>Edge Detection: ON</b><br/>
+FPS: 14.1 | Black bg, white edges
+</td>
+</tr>
+</table>
 
-> Showing notebook with intricate patterns detected as white edge contours
+> Notebook with intricate patterns detected as white edge contours
 
 
 
@@ -394,19 +404,21 @@ int edgeValue = magnitude > threshold ? 255 : 0;
 - **Edge Detection ON**: Black background, white edges, FPS display
 - **Toggle Button**: "Enable/Disable Edge Detection"
 
-### Web Viewer Screenshots
+### Web Viewer Screenshot
 
-| Live Canny Edge Detection Viewer |
-|:--------------------------------:|
-| Stats: 83 frames, 25.9 FPS, 11.4ms processing |
-| ![Web Viewer](https://i.imgur.com/placeholder-web.png) |
+<p align="center">
+<img src="docs/Screenshot 2025-10-07 191728.png" width="700"/><br/>
+<b>Live Canny Edge Detection - Web Viewer</b><br/>
+Stats: 83 frames | 25.9 FPS | 11.4ms avg processing | 480x360 resolution
+</p>
 
-**Features Shown:**
-- ✅ Side-by-side comparison (Original vs Canny edges)
-- ✅ Real-time statistics (Total frames, FPS, Processing time, Resolution)
-- ✅ Black background with white edge contours
-- ✅ Interactive controls (Load Sample, Start/Stop Simulation)
-- ✅ Professional, responsive UI
+**Features Demonstrated:**
+- ✅ **Side-by-side comparison**: Original (left) vs Canny edges (right)
+- ✅ **Real-time statistics**: Total frames, FPS, processing time, resolution
+- ✅ **Black background with white edge contours** (proper Canny output)
+- ✅ **Interactive controls**: Load Sample, Start Simulation, Stop buttons
+- ✅ **Professional UI**: Gradient background, material design, responsive layout
+- ✅ **Live animation**: Shapes move to simulate video processing
 
 ---
 
