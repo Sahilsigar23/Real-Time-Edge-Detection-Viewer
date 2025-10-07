@@ -2,7 +2,7 @@
  * Frame Viewer - Displays processed frames from Edge Detector app
  */
 
-import { FrameStats, ProcessedFrame, ViewerConfig } from './types';
+import { FrameStats, ProcessedFrame, ViewerConfig } from './types.js';
 
 export class FrameViewer {
     private container: HTMLElement;
