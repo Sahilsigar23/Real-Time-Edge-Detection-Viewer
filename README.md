@@ -16,13 +16,9 @@ A real-time edge detection application that demonstrates proficiency in:
 
 ### 🎬 Demo
 
-| Raw Camera Feed | Edge Detection ON |
-|:---------------:|:------------------:|
-| ![Raw Feed](docs/screenshot1.jpg) | ![Edge Detection](docs/screenshot2.jpg) |
+**📹 Live Demo Video**: [Watch on Loom](https://www.loom.com/share/1d57bdc4f89d4215abd60a7d1128bfa5)
 
-> **Note**: Add actual screenshots to `docs/` folder
 
----
 
 ## ✨ Features
 
