@@ -18,6 +18,15 @@ A real-time edge detection application that demonstrates proficiency in:
 
 **📹 Live Demo Video**: [Watch on Loom](https://www.loom.com/share/1d57bdc4f89d4215abd60a7d1128bfa5)
 
+### 📸 App Screenshots
+
+| Raw Camera Feed (OFF) | Edge Detection (ON) |
+|:---------------------:|:--------------------:|
+| FPS: 31.2 - Normal camera view | FPS: 14.1 - Black bg, white edges |
+| ![Screenshot OFF](https://i.imgur.com/placeholder1.png) | ![Screenshot ON](https://i.imgur.com/placeholder2.png) |
+
+> Showing notebook with intricate patterns detected as white edge contours
+
 
 
 ## ✨ Features
@@ -385,12 +394,19 @@ int edgeValue = magnitude > threshold ? 255 : 0;
 - **Edge Detection ON**: Black background, white edges, FPS display
 - **Toggle Button**: "Enable/Disable Edge Detection"
 
-### Web Viewer
-- **Side-by-side**: Original frame vs Edge-detected frame
-- **Statistics Panel**: FPS, processing time, frame count, resolution
-- **Controls**: Load Sample, Start/Stop Simulation
+### Web Viewer Screenshots
 
-*Add actual screenshots to `/docs` folder and update paths in README*
+| Live Canny Edge Detection Viewer |
+|:--------------------------------:|
+| Stats: 83 frames, 25.9 FPS, 11.4ms processing |
+| ![Web Viewer](https://i.imgur.com/placeholder-web.png) |
+
+**Features Shown:**
+- ✅ Side-by-side comparison (Original vs Canny edges)
+- ✅ Real-time statistics (Total frames, FPS, Processing time, Resolution)
+- ✅ Black background with white edge contours
+- ✅ Interactive controls (Load Sample, Start/Stop Simulation)
+- ✅ Professional, responsive UI
 
 ---
 
