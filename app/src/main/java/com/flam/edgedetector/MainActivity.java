@@ -186,27 +186,49 @@ public class MainActivity extends AppCompatActivity {
     }
     
     /**
-     * Java-based simple edge detection fallback (when native library not available)
+     * Java-based Sobel edge detection (when native library not available)
+     * Black background with white edges like proper Canny detection
      */
     private byte[] processFrameJava(byte[] frameData, int width, int height) {
-        byte[] output = new byte[frameData.length];
-        
-        // Simple grayscale + invert for basic edge effect
+        // Convert to grayscale
+        int[] gray = new int[width * height];
         for (int i = 0; i < frameData.length; i += 4) {
+            int idx = i / 4;
             int r = frameData[i] & 0xFF;
             int g = frameData[i + 1] & 0xFF;
             int b = frameData[i + 2] & 0xFF;
-            
-            // Grayscale
-            int gray = (int)(0.299 * r + 0.587 * g + 0.114 * b);
-            
-            // Simple edge approximation (invert)
-            int edge = 255 - gray;
-            
-            output[i] = (byte)edge;
-            output[i + 1] = (byte)edge;
-            output[i + 2] = (byte)edge;
-            output[i + 3] = (byte)255; // Alpha
+            gray[idx] = (int)(0.299 * r + 0.587 * g + 0.114 * b);
+        }
+        
+        // Sobel edge detection
+        byte[] output = new byte[frameData.length];
+        int threshold = 100; // Edge threshold
+        
+        for (int y = 1; y < height - 1; y++) {
+            for (int x = 1; x < width - 1; x++) {
+                int idx = y * width + x;
+                
+                // Sobel X gradient
+                int gx = -gray[(y-1)*width + x-1] + gray[(y-1)*width + x+1]
+                       - 2*gray[y*width + x-1] + 2*gray[y*width + x+1]
+                       - gray[(y+1)*width + x-1] + gray[(y+1)*width + x+1];
+                
+                // Sobel Y gradient
+                int gy = -gray[(y-1)*width + x-1] - 2*gray[(y-1)*width + x] - gray[(y-1)*width + x+1]
+                       + gray[(y+1)*width + x-1] + 2*gray[(y+1)*width + x] + gray[(y+1)*width + x+1];
+                
+                // Gradient magnitude
+                int magnitude = (int)Math.sqrt(gx * gx + gy * gy);
+                
+                // Threshold: black background (0), white edges (255)
+                int edgeValue = magnitude > threshold ? 255 : 0;
+                
+                int outIdx = idx * 4;
+                output[outIdx] = (byte)edgeValue;
+                output[outIdx + 1] = (byte)edgeValue;
+                output[outIdx + 2] = (byte)edgeValue;
+                output[outIdx + 3] = (byte)255; // Alpha
+            }
         }
         
         return output;

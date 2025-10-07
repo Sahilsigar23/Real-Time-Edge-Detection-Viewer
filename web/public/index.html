@@ -15,62 +15,62 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         h1 {
-            font-size: 2.2em;
+            font-size: 1.8em;
             margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .subtitle {
-            font-size: 1em;
+            font-size: 0.9em;
             opacity: 0.9;
         }
 
         .viewer-card {
             background: #e8eaf6;
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .stats-panel {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
         }
 
         .stat-box {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 8px;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .stat-value {
-            font-size: 2.5em;
+            font-size: 1.8em;
             font-weight: bold;
             color: #667eea;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.75em;
             color: #666;
             font-weight: 500;
         }
@@ -78,23 +78,23 @@
         .frames-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 25px;
+            gap: 15px;
+            margin-bottom: 15px;
         }
 
         .frame-box {
             background: white;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 8px;
+            padding: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .frame-label {
-            font-size: 1.1em;
+            font-size: 0.9em;
             font-weight: 600;
             color: #333;
-            margin-bottom: 10px;
-            padding: 8px;
+            margin-bottom: 8px;
+            padding: 6px;
             background: #f0f0f0;
             border-radius: 5px;
             text-align: center;
@@ -102,38 +102,32 @@
 
         .frame-display {
             width: 100%;
-            min-height: 300px;
             background: #000;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
         }
 
-        .frame-display img {
-            max-width: 100%;
+        .frame-display canvas {
+            width: 100%;
             height: auto;
             display: block;
-        }
-
-        .frame-display canvas {
-            max-width: 100%;
-            height: auto;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .control-btn {
-            padding: 14px 28px;
-            font-size: 16px;
+            padding: 10px 20px;
+            font-size: 14px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
@@ -148,7 +142,7 @@
             border: none;
         }
 
-        .control-btn:hover {
+        .control-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
@@ -156,16 +150,16 @@
         .control-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
         .simulation-status {
             text-align: center;
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 10px;
+            padding: 8px;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 600;
+            font-size: 0.9em;
             color: #667eea;
         }
 
@@ -182,18 +176,14 @@
         footer {
             text-align: center;
             color: white;
-            margin-top: 30px;
+            margin-top: 20px;
             opacity: 0.8;
-            font-size: 0.9em;
+            font-size: 0.8em;
         }
 
         @media (max-width: 968px) {
             .frames-container {
                 grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 1.8em;
             }
         }
     </style>
@@ -201,7 +191,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎯 Edge Detector Web Viewer</h1>
+            <h1>🎯 Canny Edge Detection Viewer</h1>
             <p class="subtitle">Real-Time OpenCV Edge Detection Simulation</p>
         </header>
 
@@ -213,7 +203,7 @@
                     <div class="stat-label">Total Frames</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="current-fps">30</div>
+                    <div class="stat-value" id="current-fps">0</div>
                     <div class="stat-label">Current FPS</div>
                 </div>
                 <div class="stat-box">
@@ -221,8 +211,8 @@
                     <div class="stat-label">Avg Processing (ms)</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-value" id="connected-clients">0</div>
-                    <div class="stat-label">Connected Clients</div>
+                    <div class="stat-value" id="resolution">480x360</div>
+                    <div class="stat-label">Resolution</div>
                 </div>
             </div>
 
@@ -230,120 +220,247 @@
             <div class="frames-container">
                 <div class="frame-box">
                     <div class="frame-label">📷 Original Frame</div>
-                    <div id="original-frame" class="frame-display">
-                        <canvas id="original-canvas" width="640" height="480"></canvas>
+                    <div class="frame-display">
+                        <canvas id="original-canvas" width="480" height="360"></canvas>
                     </div>
                 </div>
                 <div class="frame-box">
-                    <div class="frame-label">🎯 Edge Detection</div>
-                    <div id="processed-frame" class="frame-display">
-                        <canvas id="processed-canvas" width="640" height="480"></canvas>
+                    <div class="frame-label">🎯 Canny Edge Detection</div>
+                    <div class="frame-display">
+                        <canvas id="processed-canvas" width="480" height="360"></canvas>
                     </div>
                 </div>
             </div>
             
             <div class="controls">
-                <button id="load-sample-btn" class="control-btn">📥 Load Sample Frame</button>
+                <button id="load-sample-btn" class="control-btn">📥 Load Sample</button>
                 <button id="start-sim-btn" class="control-btn primary">▶️ Start Simulation</button>
-                <button id="stop-sim-btn" class="control-btn" disabled>⏹️ Stop Simulation</button>
+                <button id="stop-sim-btn" class="control-btn" disabled>⏹️ Stop</button>
             </div>
 
             <div class="simulation-status" id="sim-status">
-                Ready to simulate edge detection
+                Ready - Click Start to begin
             </div>
         </div>
 
         <footer>
-            <p>Flam RnD Intern Assessment - 2025 | Android + OpenCV-C++ + OpenGL + Web Integration</p>
+            <p>Flam RnD Intern Assessment 2025 | Android + OpenCV-C++ + OpenGL + TypeScript Web</p>
         </footer>
     </div>
 
-    <script type="module">
-        // Enhanced Web Viewer with Simulation
+    <script>
+        // Live Canny Edge Detection Viewer
         let simulationRunning = false;
-        let frameCount = 0;
         let simulationInterval = null;
+        let frameCount = 0;
         let processingTimes = [];
+        let startTime = Date.now();
 
         const originalCanvas = document.getElementById('original-canvas');
         const processedCanvas = document.getElementById('processed-canvas');
         const originalCtx = originalCanvas.getContext('2d');
         const processedCtx = processedCanvas.getContext('2d');
 
-        // Draw sample original frame with shapes
-        function drawOriginalFrame() {
-            originalCtx.fillStyle = '#f5f5dc';
-            originalCtx.fillRect(0, 0, 640, 480);
-            
-            // Red rectangle
-            originalCtx.fillStyle = '#ff4444';
-            originalCtx.fillRect(100, 150, 150, 120);
-            
-            // Blue circle
-            originalCtx.fillStyle = '#4444ff';
-            originalCtx.beginPath();
-            originalCtx.arc(400, 200, 60, 0, Math.PI * 2);
-            originalCtx.fill();
-            
-            // Green diamond
-            originalCtx.fillStyle = '#44ff44';
-            originalCtx.beginPath();
-            originalCtx.moveTo(520, 150);
-            originalCtx.lineTo(570, 200);
-            originalCtx.lineTo(520, 250);
-            originalCtx.lineTo(470, 200);
-            originalCtx.closePath();
-            originalCtx.fill();
-            
-            // Text
-            originalCtx.fillStyle = '#333';
-            originalCtx.font = 'bold 20px Arial';
-            originalCtx.textAlign = 'center';
-            originalCtx.fillText('EDGE DETECTION TEST', 320, 420);
-        }
-
-        // Simulate edge detection (inverted edges)
-        function processEdgeDetection() {
-            const imageData = originalCtx.getImageData(0, 0, 640, 480);
+        // Enhanced Canny Edge Detection Algorithm
+        function applyCannyEdgeDetection(imageData) {
+            const width = imageData.width;
+            const height = imageData.height;
             const data = imageData.data;
-            const edges = processedCtx.createImageData(640, 480);
             
-            // Simple edge detection: Find color changes
-            for (let y = 1; y < 479; y++) {
-                for (let x = 1; x < 639; x++) {
-                    const idx = (y * 640 + x) * 4;
-                    
-                    // Get grayscale values
-                    const gray = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-                    const grayRight = (data[idx + 4] + data[idx + 5] + data[idx + 6]) / 3;
-                    const grayDown = (data[idx + 640 * 4] + data[idx + 640 * 4 + 1] + data[idx + 640 * 4 + 2]) / 3;
-                    
-                    // Detect edges (simple gradient)
-                    const edge = Math.abs(gray - grayRight) + Math.abs(gray - grayDown);
-                    const edgeValue = edge > 30 ? 255 : 0;
-                    
-                    edges.data[idx] = edgeValue;
-                    edges.data[idx + 1] = edgeValue;
-                    edges.data[idx + 2] = edgeValue;
-                    edges.data[idx + 3] = 255;
+            // Grayscale conversion
+            const gray = new Float32Array(width * height);
+            for (let i = 0; i < data.length; i += 4) {
+                const idx = i / 4;
+                gray[idx] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+            }
+            
+            // Gaussian blur (5x5 for better smoothing)
+            const blurred = new Float32Array(width * height);
+            for (let y = 2; y < height - 2; y++) {
+                for (let x = 2; x < width - 2; x++) {
+                    let sum = 0;
+                    // 5x5 Gaussian kernel
+                    sum += gray[(y-2)*width + x-2] * 2  + gray[(y-2)*width + x-1] * 4  + gray[(y-2)*width + x] * 5  + gray[(y-2)*width + x+1] * 4  + gray[(y-2)*width + x+2] * 2;
+                    sum += gray[(y-1)*width + x-2] * 4  + gray[(y-1)*width + x-1] * 9  + gray[(y-1)*width + x] * 12 + gray[(y-1)*width + x+1] * 9  + gray[(y-1)*width + x+2] * 4;
+                    sum += gray[y*width + x-2] * 5      + gray[y*width + x-1] * 12     + gray[y*width + x] * 15     + gray[y*width + x+1] * 12     + gray[y*width + x+2] * 5;
+                    sum += gray[(y+1)*width + x-2] * 4  + gray[(y+1)*width + x-1] * 9  + gray[(y+1)*width + x] * 12 + gray[(y+1)*width + x+1] * 9  + gray[(y+1)*width + x+2] * 4;
+                    sum += gray[(y+2)*width + x-2] * 2  + gray[(y+2)*width + x-1] * 4  + gray[(y+2)*width + x] * 5  + gray[(y+2)*width + x+1] * 4  + gray[(y+2)*width + x+2] * 2;
+                    blurred[y * width + x] = sum / 159;
                 }
             }
             
-            processedCtx.fillStyle = '#000';
-            processedCtx.fillRect(0, 0, 640, 480);
-            processedCtx.putImageData(edges, 0, 0);
+            // Sobel gradients with direction
+            const magnitude = new Float32Array(width * height);
+            const direction = new Float32Array(width * height);
             
-            // Add result text
-            processedCtx.fillStyle = '#fff';
-            processedCtx.font = 'bold 18px Arial';
-            processedCtx.textAlign = 'center';
-            processedCtx.fillText('EDGE DETECTION RESULT', 320, 460);
+            for (let y = 2; y < height - 2; y++) {
+                for (let x = 2; x < width - 2; x++) {
+                    const idx = y * width + x;
+                    
+                    // Sobel operators
+                    const gx = -blurred[(y-1)*width + x-1] + blurred[(y-1)*width + x+1]
+                             -2*blurred[y*width + x-1] + 2*blurred[y*width + x+1]
+                             -blurred[(y+1)*width + x-1] + blurred[(y+1)*width + x+1];
+                    
+                    const gy = -blurred[(y-1)*width + x-1] - 2*blurred[(y-1)*width + x] - blurred[(y-1)*width + x+1]
+                             +blurred[(y+1)*width + x-1] + 2*blurred[(y+1)*width + x] + blurred[(y+1)*width + x+1];
+                    
+                    magnitude[idx] = Math.sqrt(gx * gx + gy * gy);
+                    direction[idx] = Math.atan2(gy, gx);
+                }
+            }
+            
+            // Non-maximum suppression
+            const suppressed = new Float32Array(width * height);
+            for (let y = 2; y < height - 2; y++) {
+                for (let x = 2; x < width - 2; x++) {
+                    const idx = y * width + x;
+                    const angle = direction[idx] * 180 / Math.PI;
+                    const mag = magnitude[idx];
+                    
+                    let neighbor1 = 0, neighbor2 = 0;
+                    
+                    // Check neighbors based on gradient direction
+                    if ((angle >= -22.5 && angle < 22.5) || (angle >= 157.5 || angle < -157.5)) {
+                        neighbor1 = magnitude[idx - 1];
+                        neighbor2 = magnitude[idx + 1];
+                    } else if ((angle >= 22.5 && angle < 67.5) || (angle >= -157.5 && angle < -112.5)) {
+                        neighbor1 = magnitude[idx - width + 1];
+                        neighbor2 = magnitude[idx + width - 1];
+                    } else if ((angle >= 67.5 && angle < 112.5) || (angle >= -112.5 && angle < -67.5)) {
+                        neighbor1 = magnitude[idx - width];
+                        neighbor2 = magnitude[idx + width];
+                    } else {
+                        neighbor1 = magnitude[idx - width - 1];
+                        neighbor2 = magnitude[idx + width + 1];
+                    }
+                    
+                    if (mag >= neighbor1 && mag >= neighbor2) {
+                        suppressed[idx] = mag;
+                    }
+                }
+            }
+            
+            // Double thresholding and edge tracking
+            const edges = new Uint8ClampedArray(width * height * 4);
+            const lowThreshold = 20;
+            const highThreshold = 60;
+            
+            // Mark strong and weak edges
+            for (let i = 0; i < suppressed.length; i++) {
+                const mag = suppressed[i];
+                if (mag >= highThreshold) {
+                    edges[i * 4] = edges[i * 4 + 1] = edges[i * 4 + 2] = 255; // Strong edge
+                } else if (mag >= lowThreshold) {
+                    edges[i * 4] = edges[i * 4 + 1] = edges[i * 4 + 2] = 128; // Weak edge
+                }
+                edges[i * 4 + 3] = 255;
+            }
+            
+            // Edge tracking by hysteresis - connect weak edges to strong edges
+            for (let y = 2; y < height - 2; y++) {
+                for (let x = 2; x < width - 2; x++) {
+                    const idx = y * width + x;
+                    const pidx = idx * 4;
+                    
+                    if (edges[pidx] === 128) { // Weak edge
+                        // Check if connected to strong edge
+                        let connected = false;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                if (dx === 0 && dy === 0) continue;
+                                const nidx = ((y + dy) * width + (x + dx)) * 4;
+                                if (edges[nidx] === 255) {
+                                    connected = true;
+                                    break;
+                                }
+                            }
+                            if (connected) break;
+                        }
+                        
+                        if (connected) {
+                            edges[pidx] = edges[pidx + 1] = edges[pidx + 2] = 255;
+                        } else {
+                            edges[pidx] = edges[pidx + 1] = edges[pidx + 2] = 0;
+                        }
+                    }
+                }
+            }
+            
+            return new ImageData(edges, width, height);
+        }
+
+        // Draw animated sample frame
+        function drawSampleFrame() {
+            const time = Date.now() * 0.001;
+            originalCtx.fillStyle = '#f5f5dc';
+            originalCtx.fillRect(0, 0, 480, 360);
+            
+            // Animated shapes for video-like effect
+            const offset = Math.sin(time) * 30;
+            const rotation = time * 0.5;
+            
+            // Rectangle
+            originalCtx.fillStyle = '#ff4444';
+            originalCtx.fillRect(80 + offset, 100, 100, 80);
+            
+            // Circle
+            originalCtx.fillStyle = '#4444ff';
+            originalCtx.beginPath();
+            originalCtx.arc(280, 140 + offset * 0.5, 40, 0, Math.PI * 2);
+            originalCtx.fill();
+            
+            // Triangle
+            originalCtx.fillStyle = '#44ff44';
+            originalCtx.beginPath();
+            originalCtx.moveTo(380 - offset, 100);
+            originalCtx.lineTo(420 - offset, 160);
+            originalCtx.lineTo(340 - offset, 160);
+            originalCtx.closePath();
+            originalCtx.fill();
+            
+            // Moving line
+            originalCtx.strokeStyle = '#ff6600';
+            originalCtx.lineWidth = 5;
+            originalCtx.beginPath();
+            originalCtx.moveTo(50, 250 + offset * 0.3);
+            originalCtx.lineTo(430, 250 - offset * 0.3);
+            originalCtx.stroke();
+            
+            // Text
+            originalCtx.fillStyle = '#333';
+            originalCtx.font = 'bold 16px Arial';
+            originalCtx.textAlign = 'center';
+            originalCtx.fillText('LIVE CANNY EDGE DETECTION', 240, 320);
+        }
+
+        // Process and display edges
+        function processAndDisplay() {
+            const perfStart = performance.now();
+            
+            drawSampleFrame();
+            const imageData = originalCtx.getImageData(0, 0, 480, 360);
+            const edgeData = applyCannyEdgeDetection(imageData);
+            
+            processedCtx.fillStyle = '#000';
+            processedCtx.fillRect(0, 0, 480, 360);
+            processedCtx.putImageData(edgeData, 0, 0);
+            
+            const perfEnd = performance.now();
+            processingTimes.push(perfEnd - perfStart);
+            if (processingTimes.length > 30) processingTimes.shift();
+            
+            frameCount++;
+            updateStats();
         }
 
         // Update statistics
         function updateStats() {
             document.getElementById('total-frames').textContent = frameCount;
-            document.getElementById('current-fps').textContent = simulationRunning ? '30' : '0';
+            
+            const elapsed = (Date.now() - startTime) / 1000;
+            const fps = elapsed > 0 ? (frameCount / elapsed).toFixed(1) : '0';
+            document.getElementById('current-fps').textContent = fps;
             
             const avgProc = processingTimes.length > 0 
                 ? (processingTimes.reduce((a, b) => a + b, 0) / processingTimes.length).toFixed(1)
@@ -351,29 +468,21 @@
             document.getElementById('avg-processing').textContent = avgProc;
         }
 
-        // Load sample frame
-        function loadSample() {
-            drawOriginalFrame();
-            processEdgeDetection();
-            frameCount++;
-            processingTimes.push(Math.random() * 20 + 30);
-            if (processingTimes.length > 100) processingTimes.shift();
-            updateStats();
-        }
-
         // Start simulation
         function startSimulation() {
             if (simulationRunning) return;
             
             simulationRunning = true;
+            startTime = Date.now();
+            frameCount = 0;
+            processingTimes = [];
+            
             document.getElementById('start-sim-btn').disabled = true;
             document.getElementById('stop-sim-btn').disabled = false;
-            document.getElementById('sim-status').textContent = 'Simulation Running...';
+            document.getElementById('sim-status').textContent = '🟢 Simulation Running - Processing at 30 FPS';
             document.getElementById('sim-status').classList.add('running');
             
-            simulationInterval = setInterval(() => {
-                loadSample();
-            }, 1000 / 30); // 30 FPS
+            simulationInterval = setInterval(processAndDisplay, 1000 / 30);
         }
 
         // Stop simulation
@@ -382,21 +491,21 @@
             
             simulationRunning = false;
             clearInterval(simulationInterval);
+            
             document.getElementById('start-sim-btn').disabled = false;
             document.getElementById('stop-sim-btn').disabled = true;
-            document.getElementById('sim-status').textContent = 'Simulation Stopped';
+            document.getElementById('sim-status').textContent = '⏸️ Simulation Stopped';
             document.getElementById('sim-status').classList.remove('running');
-            updateStats();
         }
 
         // Event listeners
-        document.getElementById('load-sample-btn').addEventListener('click', loadSample);
+        document.getElementById('load-sample-btn').addEventListener('click', processAndDisplay);
         document.getElementById('start-sim-btn').addEventListener('click', startSimulation);
         document.getElementById('stop-sim-btn').addEventListener('click', stopSimulation);
 
         // Initialize
-        loadSample();
-        console.log('Edge Detector Web Viewer initialized');
+        processAndDisplay();
+        console.log('✅ Live Canny Edge Detection Viewer initialized');
     </script>
 </body>
 </html>
