@@ -8,13 +8,38 @@ import android.util.Log;
 public class NativeProcessor {
     private static final String TAG = "NativeProcessor";
 
+    private static boolean librariesLoaded = false;
+    private static String loadError = null;
+
     static {
         try {
+            // Load OpenCV library first (required dependency)
+            System.loadLibrary("opencv_java4");
+            Log.d(TAG, "OpenCV library loaded successfully");
+            
+            // Then load our native library
             System.loadLibrary("native-lib");
             Log.d(TAG, "Native library loaded successfully");
+            librariesLoaded = true;
         } catch (UnsatisfiedLinkError e) {
-            Log.e(TAG, "Failed to load native library: " + e.getMessage());
+            loadError = e.getMessage();
+            Log.e(TAG, "Failed to load native libraries: " + e.getMessage());
+            Log.e(TAG, "Stack trace: ", e);
         }
+    }
+
+    /**
+     * Check if native libraries are loaded
+     */
+    public static boolean isLoaded() {
+        return librariesLoaded;
+    }
+
+    /**
+     * Get the load error message if libraries failed to load
+     */
+    public static String getLoadError() {
+        return loadError;
     }
 
     /**

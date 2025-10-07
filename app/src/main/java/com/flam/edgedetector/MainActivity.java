@@ -41,6 +41,15 @@ public class MainActivity extends AppCompatActivity {
         statusTextView = findViewById(R.id.statusTextView);
         toggleButton = findViewById(R.id.toggleButton);
 
+        // Check if native libraries are loaded
+        if (!NativeProcessor.isLoaded()) {
+            Log.w(TAG, "Native library not available - using Java fallback");
+            toggleButton.setEnabled(true);
+        } else {
+            Log.d(TAG, "Native libraries loaded successfully!");
+            toggleButton.setEnabled(true);
+        }
+
         // Set up OpenGL ES 2.0
         glSurfaceView.setEGLContextClientVersion(2);
         glRenderer = new GLRenderer(this);
@@ -48,7 +57,14 @@ public class MainActivity extends AppCompatActivity {
         glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         // Set up toggle button
-        toggleButton.setOnClickListener(v -> toggleProcessing());
+        toggleButton.setOnClickListener(v -> {
+            Log.d(TAG, "Toggle button clicked!");
+            toggleProcessing();
+        });
+        
+        // Initialize button text
+        Log.d(TAG, "Initializing button text, isProcessingEnabled: " + isProcessingEnabled);
+        updateButtonText();
 
         // Request camera permission
         if (checkCameraPermission()) {
@@ -115,30 +131,30 @@ public class MainActivity extends AppCompatActivity {
 
             byte[] processedData;
             if (isProcessingEnabled) {
-                // Try to process frame through JNI
-                try {
-                    long startTime = System.nanoTime();
-                    processedData = NativeProcessor.processFrame(frameData, width, height);
-                    long endTime = System.nanoTime();
-                    
-                    if (processedData == null) {
-                        Log.w(TAG, "Frame processing returned null, using original");
-                        processedData = frameData;
-                    } else {
-                        float processingTime = (endTime - startTime) / 1_000_000.0f;
-                        Log.d(TAG, "Frame processing time: " + processingTime + " ms");
+                long startTime = System.nanoTime();
+                
+                // Try native processing first, fall back to Java if unavailable
+                if (NativeProcessor.isLoaded()) {
+                    try {
+                        processedData = NativeProcessor.processFrame(frameData, width, height);
+                        if (processedData == null) {
+                            Log.w(TAG, "Native processing returned null, using Java fallback");
+                            processedData = processFrameJava(frameData, width, height);
+                        }
+                    } catch (UnsatisfiedLinkError e) {
+                        Log.w(TAG, "Native processing failed, using Java fallback: " + e.getMessage());
+                        processedData = processFrameJava(frameData, width, height);
                     }
-                } catch (UnsatisfiedLinkError e) {
-                    Log.e(TAG, "Native library not available: " + e.getMessage());
-                    processedData = frameData;
-                    // Disable processing since native lib isn't working
-                    isProcessingEnabled = false;
-                    runOnUiThread(() -> {
-                        updateStatusText();
-                        Toast.makeText(MainActivity.this, 
-                                "Native library not loaded. Rebuild the app.", 
-                                Toast.LENGTH_LONG).show();
-                    });
+                } else {
+                    // Use Java fallback
+                    processedData = processFrameJava(frameData, width, height);
+                }
+                
+                long endTime = System.nanoTime();
+                float processingTime = (endTime - startTime) / 1_000_000.0f;
+                // Only log occasionally to avoid spam
+                if (System.currentTimeMillis() % 1000 < 50) {
+                    Log.d(TAG, "Frame processing time: " + processingTime + " ms");
                 }
             } else {
                 // Use raw frame
@@ -158,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
     private void toggleProcessing() {
         isProcessingEnabled = !isProcessingEnabled;
         updateStatusText();
+        updateButtonText();
+        
         Log.d(TAG, "Processing toggled: " + (isProcessingEnabled ? "ON" : "OFF"));
         
         if (isProcessingEnabled) {
@@ -165,6 +183,43 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Showing Raw Camera Feed", Toast.LENGTH_SHORT).show();
         }
+    }
+    
+    /**
+     * Java-based simple edge detection fallback (when native library not available)
+     */
+    private byte[] processFrameJava(byte[] frameData, int width, int height) {
+        byte[] output = new byte[frameData.length];
+        
+        // Simple grayscale + invert for basic edge effect
+        for (int i = 0; i < frameData.length; i += 4) {
+            int r = frameData[i] & 0xFF;
+            int g = frameData[i + 1] & 0xFF;
+            int b = frameData[i + 2] & 0xFF;
+            
+            // Grayscale
+            int gray = (int)(0.299 * r + 0.587 * g + 0.114 * b);
+            
+            // Simple edge approximation (invert)
+            int edge = 255 - gray;
+            
+            output[i] = (byte)edge;
+            output[i + 1] = (byte)edge;
+            output[i + 2] = (byte)edge;
+            output[i + 3] = (byte)255; // Alpha
+        }
+        
+        return output;
+    }
+    
+    private void updateButtonText() {
+        runOnUiThread(() -> {
+            if (isProcessingEnabled) {
+                toggleButton.setText("Disable Edge Detection");
+            } else {
+                toggleButton.setText("Enable Edge Detection");
+            }
+        });
     }
 
     private void updateStatusText() {

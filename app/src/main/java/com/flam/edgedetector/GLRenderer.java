@@ -45,12 +45,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
              1.0f,  1.0f   // Top right
     };
 
-    // Texture coordinates (flipped vertically for camera)
+    // Texture coordinates (rotated 90 degrees counterclockwise for camera orientation)
     private static final float[] TEXTURE_COORDS = {
-            0.0f, 1.0f,  // Bottom left
-            1.0f, 1.0f,  // Bottom right
-            0.0f, 0.0f,  // Top left
-            1.0f, 0.0f   // Top right
+            1.0f, 1.0f,  // Bottom left
+            1.0f, 0.0f,  // Bottom right
+            0.0f, 1.0f,  // Top left
+            0.0f, 0.0f   // Top right
     };
 
     private final Context context;

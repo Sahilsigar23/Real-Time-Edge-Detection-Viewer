@@ -166,14 +166,32 @@ public class CameraHandler {
     }
 
     private void createCaptureSession() {
+        if (cameraDevice == null) {
+            Log.e(TAG, "Cannot create capture session - camera device is null");
+            return;
+        }
+        
+        if (imageReader == null) {
+            Log.e(TAG, "Cannot create capture session - image reader is null");
+            return;
+        }
+        
         try {
+            Log.d(TAG, "Creating capture session...");
             cameraDevice.createCaptureSession(
                     Arrays.asList(imageReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
                         @Override
                         public void onConfigured(@NonNull CameraCaptureSession session) {
+                            if (cameraDevice == null) {
+                                Log.w(TAG, "Camera was closed before session configured");
+                                return;
+                            }
+                            Log.d(TAG, "Capture session configured successfully");
                             captureSession = session;
-                            startCapture();
+                            
+                            // Add a small delay to ensure everything is ready
+                            backgroundHandler.postDelayed(() -> startCapture(), 100);
                         }
 
                         @Override
@@ -185,6 +203,8 @@ public class CameraHandler {
             );
         } catch (CameraAccessException e) {
             Log.e(TAG, "Error creating capture session", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Invalid argument creating capture session", e);
         }
     }
 
@@ -199,19 +219,39 @@ public class CameraHandler {
             return;
         }
         
+        if (imageReader == null) {
+            Log.e(TAG, "Cannot start capture - image reader is null");
+            return;
+        }
+        
         try {
             CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(
                     CameraDevice.TEMPLATE_PREVIEW);
+            
+            // Verify the surface is valid before adding it
+            if (imageReader.getSurface() == null) {
+                Log.e(TAG, "ImageReader surface is null");
+                return;
+            }
+            
+            if (!imageReader.getSurface().isValid()) {
+                Log.e(TAG, "ImageReader surface is not valid");
+                return;
+            }
+            
             builder.addTarget(imageReader.getSurface());
             builder.set(CaptureRequest.CONTROL_AF_MODE, 
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             
-            captureSession.setRepeatingRequest(builder.build(), null, backgroundHandler);
+            CaptureRequest request = builder.build();
+            captureSession.setRepeatingRequest(request, null, backgroundHandler);
             Log.d(TAG, "Capture started successfully");
         } catch (CameraAccessException e) {
             Log.e(TAG, "Error starting capture", e);
         } catch (IllegalStateException e) {
             Log.e(TAG, "Capture session in invalid state", e);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Invalid surface configuration", e);
         }
     }
 

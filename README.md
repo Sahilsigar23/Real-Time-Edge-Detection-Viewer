@@ -129,12 +129,12 @@ cd Flam-assignment
    - Connect Android device or start emulator
    - Click Run or `./gradlew installDebug`
 
-### Web Viewer Setup
+### Web Viewer Setup~~~~
 
 1. **Navigate to web directory**
 ```bash
 cd web
-```
+```~~~~
 
 2. **Install dependencies**
 ```bash
