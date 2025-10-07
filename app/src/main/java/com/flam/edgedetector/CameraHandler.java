@@ -189,6 +189,16 @@ public class CameraHandler {
     }
 
     private void startCapture() {
+        if (cameraDevice == null) {
+            Log.e(TAG, "Cannot start capture - camera device is null");
+            return;
+        }
+        
+        if (captureSession == null) {
+            Log.e(TAG, "Cannot start capture - capture session is null");
+            return;
+        }
+        
         try {
             CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(
                     CameraDevice.TEMPLATE_PREVIEW);
@@ -197,8 +207,11 @@ public class CameraHandler {
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             
             captureSession.setRepeatingRequest(builder.build(), null, backgroundHandler);
+            Log.d(TAG, "Capture started successfully");
         } catch (CameraAccessException e) {
             Log.e(TAG, "Error starting capture", e);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Capture session in invalid state", e);
         }
     }
 
